@@ -24,7 +24,6 @@ guessButton.addEventListener("click", function (e) {
     e.preventDefault();
     message.innerText = "";
     const guess = inputText.value;
-    console.log(guess);
     inputText.value = "";
     const goodGuess = validation(guess);
     if (goodGuess) {
@@ -40,20 +39,51 @@ const validation = function (input) {
     }
  else if (input.length > 1) {
     message.innerText = "Only one letter,please!"
-}
-else if (!input.match(acceptedLetter)){
+ }else if (!input.match(acceptedLetter)){
     message.innerText = "Wrong,you can only type letters from A to Z";
-}
-else {
+}else {
     return input;
 }
 };
 const makeGuess = function(guess) {
 guess = guess.toUpperCase();
-if (guess.includes(guess)) {
+if (guessedLetters.includes(guess)) {
     message.innerText = "You are repiting, try again";
 } else {
-   guess.push(guess); 
-   console.log=(guess);
+   guessedLetters.push(guess); 
+   console.log(guessedLetters);
+   showPlayerGuesses();
+   updateWordInProgress(guessedLetters);
 }
+};
+const showPlayerGuesses = function(){
+    //clear the list first
+    guessedLettersList.innerHTML = "";
+    for(const letter of guessedLetters){
+        const li = document.createElement ("li");
+        li.innerText = letter;
+        guessedLettersList.append(li);
+    }
+};
+const updateWordInProgress = function(guessedLetters) {
+    const wordUpper = word.toUpperCase();
+    const wordArray = wordUpper.split("");
+    const revealWord = [];
+    for (const letter of wordArray) {
+        if (guessedLetters.includes(letter)) {
+            revealWord.push(letter.toUpperCase()); 
+        }else{
+            revealWord.push("●");
+        }
+    }
+console.log(revealWord);
+wordInProgress.innerText=revealWord.join("");
+winner();
+};
+
+const winner = function () {
+    if(word.toUpperCase() === wordInProgress.innerText){
+        message.classList.add("win");
+        message.innerHTML=`<p class="highlight">You guessed the correct word! Congrats!</p>`;
+    }
 };
